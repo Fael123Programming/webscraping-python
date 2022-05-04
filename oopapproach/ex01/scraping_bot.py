@@ -40,14 +40,8 @@ class ScrapingBot(wd.Chrome):
                 convenios_cnpj_list.append(self._get_cnpj())
                 print(f"Convênio encontrado!")
                 self._click_convenios_button()
-        print("-" * 100)
-        print(f"{'Número do convênio':<20}{'CNPJ do proponente'}")
-        for conv_number, conv_cnpj in zip(convenios_number_list, convenios_cnpj_list):
-            print(f"{conv_number:<20}{conv_cnpj}")
-        print("-" * 100)
         data = {'numero_convenio': convenios_number_list, 'cnpnj_proponente_convenio': convenios_cnpj_list}
         df = pd.DataFrame(data=data)
-        print(df)
         df.to_excel("cnpj.xlsx", index=False)
 
     def _convenio_number_not_found(self, convenio_number) -> bool:
