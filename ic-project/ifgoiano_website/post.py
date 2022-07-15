@@ -2,12 +2,15 @@ from datetime import datetime
 
 
 class Post:
-    def __init__(self, category='', title='', publication_date=datetime.now(), accesses=0, description=''):
+
+    def __init__(self, category='', title='', publication_timestamp=datetime.now(), accesses=0, description='',
+                 relevance_index=0):
         self._category = category
         self._title = title
-        self._publication_date = publication_date
+        self._publication_timestamp = publication_timestamp
         self._accesses = accesses
         self._description = description
+        self._relevance_index = relevance_index
 
     @property
     def category(self):
@@ -30,14 +33,14 @@ class Post:
         self._title = title
 
     @property
-    def publication_date(self):
-        return self._publication_date.__str__()
+    def publication_timestamp(self):
+        return self._publication_timestamp
 
-    @publication_date.setter
-    def publication_date(self, publication_date: datetime):
-        if publication_date is None:
+    @publication_timestamp.setter
+    def publication_timestamp(self, publication_timestamp: datetime):
+        if publication_timestamp is None:
             return
-        self._publication_date = publication_date
+        self._publication_timestamp = publication_timestamp
 
     @property
     def accesses(self):
@@ -59,6 +62,22 @@ class Post:
             return
         self._description = description
 
+    @property
+    def relevance_index(self):
+        return self._relevance_index
+
+    @relevance_index.setter
+    def relevance_index(self, relevance_index: int):
+        if relevance_index < 0:
+            return
+        self._relevance_index = relevance_index
+
     def __str__(self):
-        return {'category': self._category, 'title': self._title, 'publication_date': self._publication_date.__str__(),
-                'accesses': self._accesses, 'description': self._description}.__str__()
+        return {
+                'category': self._category,
+                'title': self._title,
+                'publication_timestamp': self._publication_timestamp.__str__(),
+                'accesses': self._accesses,
+                'description': self._description,
+                'relevance_index': self._relevance_index
+        }.__str__()

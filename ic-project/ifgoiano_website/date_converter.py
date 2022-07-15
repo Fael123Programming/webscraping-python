@@ -3,8 +3,18 @@ from datetime import datetime
 
 class DateConverter:
 
+    instance = None
+
+    def __new__(cls):
+        if cls.instance is None:
+            cls.instance = super(DateConverter, cls).__new__(cls)
+        return cls.instance
+
     @staticmethod
-    def convert(date_string: str) -> datetime:
+    def convert(date_string: str) -> datetime | None:
+        if date_string is None:
+            return None
+
         def get_month_number(month: str) -> int:
             match month.lower():
                 case 'janeiro':
