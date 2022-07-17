@@ -33,7 +33,8 @@ class ScrapingBot:
         self._driver.get(self._url)
         self._driver.implicitly_wait(5)
         WebDriverWait(self._driver, 5).until(
-            ec.presence_of_element_located((By.CLASS_NAME, 'manchete-texto-lateral'))).click()
+            ec.presence_of_element_located((By.CLASS_NAME, 'manchete-texto-lateral'))
+        ).click()
         post = self._get_post()
         print('Featured post:', post)
         self._driver.quit()
@@ -84,7 +85,6 @@ class ScrapingBot:
         date_converter = DateConverter()
         post_category_setter = PostCategorySetter()
         relevance_index_calculator = RelevanceIndexCalculator()
-        # wait = WebDriverWait(self._driver, 20)
         post_title = self._driver.find_element(By.CLASS_NAME, 'documentFirstHeading').text  # Get post title.
         try:
             post_publish_date = self._driver.find_element(By.CLASS_NAME, 'documentPublished').text
