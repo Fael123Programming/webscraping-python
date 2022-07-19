@@ -1,4 +1,4 @@
-from post import Post
+from icproject.bot.post import Post
 from datetime import datetime
 
 

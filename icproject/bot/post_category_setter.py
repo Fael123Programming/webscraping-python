@@ -1,4 +1,4 @@
-from post import Post
+from icproject.bot.post import Post
 
 
 class PostCategorySetter:
@@ -12,4 +12,4 @@ class PostCategorySetter:
 
     @staticmethod
     def set_of(post: Post):
-        post.category = 'unknown'
+        post.category = 1  # unknown category.

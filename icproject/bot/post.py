@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Post:
 
-    def __init__(self, category='', title='', publication_timestamp=datetime.now(), accesses=0, description='',
+    def __init__(self, category=1, title='', publication_timestamp=datetime.now(), accesses=0, description='',
                  relevance_index=0):
         self._category = category
         self._title = title
@@ -17,8 +17,8 @@ class Post:
         return self._category
 
     @category.setter
-    def category(self, category: str):
-        if category is None or category.isspace() or len(category) == 0:
+    def category(self, category: int):
+        if category < 1:
             return
         self._category = category
 
@@ -81,3 +81,7 @@ class Post:
                 'description': self._description,
                 'relevance_index': self._relevance_index
         }.__str__()
+
+    def to_database_format(self) -> tuple:
+        return self._category, self._title, self._description, self._publication_timestamp.__str__(), self._accesses, \
+               self._relevance_index,

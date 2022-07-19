@@ -37,23 +37,29 @@ class DatabaseConnection:
 
     def insert_post(self, post: Post):
         cursor = self._conn.cursor()
-        fk_post_category = self.get_fk_post_category_of(post)
-        statement = f"INSERT INTO website_post (fk_post_category, post_title, post_description, " \
-                    f"post_publication_timestamp, post_accesses, relevance_index) VALUES ({fk_post_category}, " \
-                    f"'{post.title}', '{post.description}', '{post.publication_timestamp.__str__()}', {post.accesses}, " \
-                    f"{post.relevance_index});"
-        cursor.execute(statement)
+        statement = """
+            INSERT INTO website_post (fk_post_category, post_title, post_description, 
+            post_publication_timestamp, post_accesses, relevance_index) VALUES 
+            (%s, %s, %s, %s, %s, %s);
+        """
+        cursor.execute(statement, post.to_database_format())
+        self._conn.commit()
         cursor.close()
 
-    def get_fk_post_category_of(self, post: Post) -> int:
-        post_categories = self.get_post_categories()
-        for category in post_categories:
-            if category[1] == post.category:
-                return category[0]
+    def insert_post_list(self, post_list: list):
+        cursor = self._conn.cursor()
+        statement = """
+            INSERT INTO website_post (fk_post_category, post_title, post_description, post_publication_timestamp,
+            post_accesses, relevance_index) VALUES (%s);
+        """
+        post_list_database_format = list()
+        for post in post_list:
+            post_list_database_format.append(post.to_database_format())
+        cursor.executemany(statement, post_list_database_format)
+        self._conn.commit()
+        cursor.close()
 
     def disconnect(self):
         if self._conn is not None:
             self._conn.close()
             print('Connection with the PostgreSQL database ended.')
-
-
