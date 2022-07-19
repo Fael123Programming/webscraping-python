@@ -1,5 +1,5 @@
 import psycopg2
-from config import config
+from icproject.database.config import config
 from icproject.bot.post import Post
 
 
@@ -38,15 +38,10 @@ class DatabaseConnection:
     def insert_post(self, post: Post):
         cursor = self._conn.cursor()
         fk_post_category = self.get_fk_post_category_of(post)
-        statement = f"""
-            INSERT INTO website_post (
-                fk_post_category, post_title, post_description, post_publication_timestamp, post_accesses, 
-                relevance_index
-            ) VALUES (
-                {fk_post_category}, {post.title}, {post.description}, {post.publication_timestamp.__str__()}, 
-                {post.accesses}, {post.relevance_index}
-            );
-        """
+        statement = f"INSERT INTO website_post (fk_post_category, post_title, post_description, " \
+                    f"post_publication_timestamp, post_accesses, relevance_index) VALUES ({fk_post_category}, " \
+                    f"'{post.title}', '{post.description}', '{post.publication_timestamp.__str__()}', {post.accesses}, " \
+                    f"{post.relevance_index});"
         cursor.execute(statement)
         cursor.close()
 
