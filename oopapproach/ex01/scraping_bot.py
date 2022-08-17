@@ -28,18 +28,19 @@ class ScrapingBot(wd.Chrome):
     def _consult_convenio(self):
         convenios_number_list = []
         convenios_cnpj_list = []
-        while True:
-            convenio_number = input("Número do convênio (-1 para encerrar): ")
-            if convenio_number == "-1":
-                break
-            if self._convenio_number_not_found(convenio_number):
+        data_frame = pd.read_excel('solicitacoes.xlsx', index_col=0)
+        convenios_to_search_for = data_frame.index.values
+        for convenio_number in convenios_to_search_for:
+            # convenio_number = input("Número do convênio (-1 para encerrar): ")
+            # if convenio_number == "-1":
+            #     break
+            if self._convenio_number_not_found(str(convenio_number)):
                 print(f"Convênio ({convenio_number}) não encontrado...")
-                self._click_convenios_button()
             else:
                 convenios_number_list.append(convenio_number)
                 convenios_cnpj_list.append(self._get_cnpj())
                 print(f"Convênio encontrado!")
-                self._click_convenios_button()
+            self._click_convenios_button()
         data = {'numero_convenio': convenios_number_list, 'cnpnj_proponente_convenio': convenios_cnpj_list}
         df = pd.DataFrame(data=data)
         df.to_excel("cnpj.xlsx", index=False)
