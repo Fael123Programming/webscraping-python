@@ -11,20 +11,21 @@ class DatabaseConnection:
     def connect(self):
         try:
             params = config()
-            print('-' * 100)
-            print('Connecting to the PostgreSQL database...')
+            print('-' * 150)
+            print('Connecting to PostgreSQL database...')
             self._conn = psycopg2.connect(**params)
             cursor = self._conn.cursor()
             cursor.execute('SELECT version();')
             print(f'PostgreSQL database version: {cursor.fetchone()[0]}')
-            print('-' * 100)
+            print('-' * 150)
             cursor.close()
         except (Exception, psycopg2.DatabaseError) as error:
-            print('#' * 100)
+            print('#' * 150)
             print('The following error has been thrown while trying to set connection with the database:')
             print(error)
-            print('#' * 100)
-            self._conn.close()
+            print('#' * 150)
+            if self._conn is not None:
+                self._conn.close()
 
     def get_post_categories(self) -> list:
         cursor = self._conn.cursor()
@@ -46,12 +47,13 @@ class DatabaseConnection:
         self._conn.commit()
         cursor.close()
 
-    def insert_post_list(self, post_list: list):
+    def insert_posts(self, post_list: list):
         cursor = self._conn.cursor()
         statement = """
-            INSERT INTO website_post (fk_post_category, post_title, post_description, post_publication_timestamp,
-            post_accesses, relevance_index) VALUES (%s);
-        """
+                    INSERT INTO website_post (fk_post_category, post_title, post_description, 
+                    post_publication_timestamp, post_accesses, relevance_index) VALUES 
+                    (%s, %s, %s, %s, %s, %s);
+                """
         post_list_database_format = list()
         for post in post_list:
             post_list_database_format.append(post.to_database_format())
@@ -62,4 +64,4 @@ class DatabaseConnection:
     def disconnect(self):
         if self._conn is not None:
             self._conn.close()
-            print('Connection with the PostgreSQL database ended.')
+            print('----- Connection with PostgreSQL database ended.')

@@ -2,7 +2,8 @@ from configparser import RawConfigParser
 from icproject.exceptions.exceptions import DatabaseSectionNotFoundException
 
 
-def config(filename='database.ini', section='postgresql') -> dict:
+def config(filename='/home/leafar/documents/prg/code/py/webscraping/icproject/database/database.ini',
+           section='postgresql') -> dict:
     parser = RawConfigParser()
     parser.read(filename)
     db_section = dict()
