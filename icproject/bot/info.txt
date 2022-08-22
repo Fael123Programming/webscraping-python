@@ -1,0 +1,4 @@
+Total of 2391 posts fetched
+Timestamp start: 2022-08-21 09:43:52.916662
+Timestamp end: 2022-08-21 11:21:01.266574
+It took 1:37:08.349912.

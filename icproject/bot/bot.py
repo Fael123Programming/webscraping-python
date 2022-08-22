@@ -18,6 +18,9 @@ def change_spaces_by_plus_sign(url: str) -> str:
 
 
 class Bot(webdriver.Chrome):
+    IFGOIANO_HOME = 'https://ifgoiano.edu.br/home/index.php'
+    IFGOIANO_PUBLICATIONS_COMPLETE_LIST = 'https://www.ifgoiano.edu.br/home/index.php/component/content/category/' \
+                                          '160-noticias-anteriores.html'
 
     def __init__(self):
         options = webdriver.ChromeOptions()
@@ -35,14 +38,25 @@ class Bot(webdriver.Chrome):
                          options=options)
 
     def print_title_and_description_maximum_sizes(self):
-        titles = list()
-        descriptions = list()
-        self.get('https://ifgoiano.edu.br/home/index.php')
+        titles_sizes = list()
+        descriptions_sizes = list()
+        self.get(self.IFGOIANO_HOME)
         featured_post = self.find_element(By.CLASS_NAME, 'manchete-texto-lateral')
-        titles.append(len(featured_post.find_element(By.TAG_NAME, 'h1').text.strip()))
-        descriptions.append(len(featured_post.find_element(By.CLASS_NAME, 'description').text.strip()))
-        print(titles)
-        print(descriptions)
+        titles_sizes.append(len(featured_post.find_element(By.TAG_NAME, 'h1').text.strip()))
+        descriptions_sizes.append(len(featured_post.find_element(By.CLASS_NAME, 'description').text.strip()))
+        secondary_posts = self.find_element(By.CLASS_NAME, 'chamadas-secundarias')
+        for secondary_post in secondary_posts.find_elements(By.TAG_NAME, 'div'):
+            titles_sizes.append(len(secondary_post.find_element(By.TAG_NAME, 'h3').text.strip()))
+            descriptions_sizes.append(len(secondary_post.find_element(By.CLASS_NAME, 'description').text.strip()))
+        self.get(self.IFGOIANO_PUBLICATIONS_COMPLETE_LIST)
+        post_section = self.find_element(By.CLASS_NAME, 'tile-list-1')
+        for post_box in post_section.find_elements(By.CLASS_NAME, 'tileItem'):
+            titles_sizes.append(len(post_box.find_element(By.CLASS_NAME, 'tileHeadline').text.strip()))
+            descriptions_sizes.append(len(post_box.find_element(By.CLASS_NAME, 'description').text.strip()))
+        print(f'Total of titles fetched: {len(titles_sizes)}')
+        print(f'Total of descriptions fetched: {len(descriptions_sizes)}')
+        print(f'Greatest title (chars): {max(titles_sizes)}')
+        print(f'Greatest description (chars): {max(descriptions_sizes)}')
         self.quit()
 
     def export_post_urls_to_csv(self):
@@ -50,14 +64,14 @@ class Bot(webdriver.Chrome):
             Accesses `www.ifgoiano.edu.br`, fetches all post urls and place them into a .csv file.
         """
         urls = list()
-        self.get('https://ifgoiano.edu.br/home/index.php')
+        self.get(self.IFGOIANO_HOME)
         featured_post_box = self.find_element(By.CLASS_NAME, 'manchete-texto-lateral')
         urls.append([featured_post_box.find_element(By.TAG_NAME, 'a').get_attribute('href')])  # Featured post url.
         three_secondary_posts_box = self.find_element(By.CLASS_NAME, 'chamadas-secundarias')
         three_secondary_posts_urls = three_secondary_posts_box.find_elements(By.TAG_NAME, 'a')
         for i in range(0, len(three_secondary_posts_urls), 2):
             urls.append([three_secondary_posts_urls[i].get_attribute('href')])
-        self.get('https://www.ifgoiano.edu.br/home/index.php/component/content/category/160-noticias-anteriores.html')
+        self.get(self.IFGOIANO_PUBLICATIONS_COMPLETE_LIST)
         post_boxes = self.find_elements(By.CLASS_NAME, 'tileItem')
         for post_box in post_boxes:
             post_title = post_box.find_element(By.CLASS_NAME, 'tileHeadline')
@@ -85,6 +99,7 @@ class Bot(webdriver.Chrome):
             print(f'{i} - {post}')
             posts.append(post)
             i += 1
+        self.quit()
         return posts
 
     @staticmethod

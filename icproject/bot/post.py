@@ -72,5 +72,7 @@ class Post:
         }.__str__()
 
     def to_database_format(self) -> tuple:
-        return self._category, self._title, self._description, self._publication_timestamp.__str__(), self._accesses, \
-               self._relevance_index,
+        publication_timestamp = self._publication_timestamp
+        publication_timestamp = publication_timestamp.__str__() if publication_timestamp is not None else None
+        return self._category, self._title, self._description, publication_timestamp, self._accesses, \
+            self._relevance_index,

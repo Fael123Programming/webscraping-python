@@ -1,6 +1,7 @@
 import psycopg2
 from icproject.database.config import config
 from icproject.bot.post import Post
+from icproject.exceptions.exceptions import InvalidArgumentException
 
 
 class DatabaseConnection:
@@ -11,13 +12,11 @@ class DatabaseConnection:
     def connect(self):
         try:
             params = config()
-            print('-' * 150)
-            print('Connecting to PostgreSQL database...')
             self._conn = psycopg2.connect(**params)
+            print('----- Connected to PostgresSQL database...')
             cursor = self._conn.cursor()
             cursor.execute('SELECT version();')
-            print(f'PostgreSQL database version: {cursor.fetchone()[0]}')
-            print('-' * 150)
+            print(f'----- PostgreSQL database version: {cursor.fetchone()[0]}')
             cursor.close()
         except (Exception, psycopg2.DatabaseError) as error:
             print('#' * 150)
@@ -60,6 +59,22 @@ class DatabaseConnection:
         cursor.executemany(statement, post_list_database_format)
         self._conn.commit()
         cursor.close()
+
+    def get_most_relevant_posts_in_website(self, quantity=10) -> list:
+        if quantity <= 0:
+            raise InvalidArgumentException(quantity)
+        cursor = self._conn.cursor()
+        statement = f"""
+            SELECT post_title, post_publication_timestamp, relevance_index FROM website_post WHERE relevance_index 
+            IS NOT NULL ORDER BY relevance_index DESC LIMIT {quantity};
+        """
+        cursor.execute(statement)
+        self._conn.commit()
+        result = list()
+        for post in cursor.fetchall():
+            result.append(post)
+        cursor.close()
+        return result
 
     def disconnect(self):
         if self._conn is not None:
