@@ -47,3 +47,10 @@ class InvalidPlaceException(Exception):
 
     def __init__(self):
         super().__init__('The place you are entering is not a valid place.')
+
+
+class InvalidChildrenAges(Exception):
+
+    def __init__(self):
+        super().__init__(
+            'Invalid children ages: it must be a `list` containing each child\'s age from 0 to 17 (integer values).')
