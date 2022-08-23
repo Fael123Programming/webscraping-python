@@ -84,10 +84,8 @@ class Bot(webdriver.Chrome):
 
     def get_posts_data(self) -> list:
         """
-            Accesses each post url of `www.ifgoiano.edu.br` based on the file created by
-            the method `export_post_urls_to_csv()`, cast each post's data
-            into a `Post` object grouping them in a list.
-        :return: A list containing all post objects.
+        Accesses each post url at `www.ifgoiano.edu.br` based on the file created by the method `export_post_urls_to_csv()`, converts each post's data into a `Post` object grouping them in a list.
+            :return: A list containing all post objects converted.
         """
         posts = list()
         urls = self._load_urls()
@@ -104,6 +102,10 @@ class Bot(webdriver.Chrome):
 
     @staticmethod
     def _load_urls() -> list:
+        """
+        Accesses the file `post_urls.csv` and returns a list containing all web urls that were found there.
+            :return: a list with all urls from `post_urls.csv`
+        """
         data_frame = pd.read_csv('post_urls.csv')
         urls = list()
         for row in data_frame.values:
@@ -111,6 +113,11 @@ class Bot(webdriver.Chrome):
         return urls[0:len(urls) - 1]  # The last url isn't of a valuable post.
 
     def _get_post_data(self) -> Post:
+        """
+        Once the bot has reached a post web page, this method fetches all its data and returns a `Post` object holding
+        it.
+            :return: a Post object holding a post's data.
+        """
         post = Post(1, '', None, None, None, None)
         seconds = 15  # Seconds to the WebDriverWait hold on.
         date_converter = DateConverter()
