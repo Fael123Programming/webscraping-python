@@ -1,16 +1,20 @@
 from datetime import datetime
+from enums import *
 
 
 class Post:
 
-    def __init__(self, category: int, title: str, publication_timestamp: datetime | None, accesses: int | None,
-                 description: str | None,
-                 relevance_index: float | None):
+    def __init__(self, category: PostCategory, weekday: Weekday, day_period: DayPeriod, title: str,
+                 description: str | None, publication_timestamp: datetime | None, images_count: int,
+                 accesses: int | None, relevance_index: float | None):
         self._category = category
+        self._weekday = weekday
+        self._day_period = day_period
         self._title = title
-        self._publication_timestamp = publication_timestamp
-        self._accesses = accesses
         self._description = description
+        self._publication_timestamp = publication_timestamp
+        self._images_count = images_count
+        self._accesses = accesses
         self._relevance_index = relevance_index
 
     @property
@@ -64,15 +68,18 @@ class Post:
     def __str__(self):
         return {
             'category': self._category,
+            'weekday': self._weekday,
+            'day_period': self._day_period,
             'title': self._title,
-            'publication_timestamp': self._publication_timestamp.__str__(),
-            'accesses': self._accesses,
             'description': self._description,
+            'publication_timestamp': self._publication_timestamp.__str__(),
+            'images_count': self._images_count,
+            'accesses': self._accesses,
             'relevance_index': self._relevance_index
         }.__str__()
 
     def to_database_format(self) -> tuple:
         publication_timestamp = self._publication_timestamp
         publication_timestamp = publication_timestamp.__str__() if publication_timestamp is not None else None
-        return self._category, self._title, self._description, publication_timestamp, self._accesses, \
-            self._relevance_index,
+        return self._category, self._weekday, self._day_period, self._title, self._description, publication_timestamp, \
+            self._images_count, self._accesses, self._relevance_index,

@@ -11,6 +11,7 @@ from icproject.bot.post_category_setter import PostCategorySetter
 from icproject.bot.relevance_index_calculator import RelevanceIndexCalculator
 import pandas as pd
 from time import sleep
+from enums import *
 
 
 def change_spaces_by_plus_sign(url: str) -> str:
@@ -118,7 +119,7 @@ class Bot(webdriver.Chrome):
         it.
             :return: a Post object holding a post's data.
         """
-        post = Post(1, '', None, None, None, None)
+        post = Post(PostCategory.UNKNOWN, Weekday.SUNDAY, '', None, None, None, None)
         seconds = 15  # Seconds to the WebDriverWait hold on.
         date_converter = DateConverter()
         post_category_setter = PostCategorySetter()

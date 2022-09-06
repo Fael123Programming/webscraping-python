@@ -18,7 +18,7 @@ if __name__ == "__main__":
     conn = DatabaseConnection()
     conn.connect()
     # conn.insert_posts(posts)
-    most_relevant_posts = conn.get_most_relevant_posts_in_website(quantity=100)
+    most_relevant_posts = conn.get_most_relevant_posts_in_website(quantity=10)
     print('-' * 170)
     print(f'{"Post Title":<100}{"Publication Timestamp":<50}{"Relevance Index"}')
     print('-' * 170)

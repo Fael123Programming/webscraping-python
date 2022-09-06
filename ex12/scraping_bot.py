@@ -1,15 +1,16 @@
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.chrome import ChromeDriverManager, ChromeType
 import pandas
 
 
 class ScrapingBot(wd.Chrome):
     def __init__(self):
-        options = wd.ChromeOptions().add_experimental_option('excludeSwitches', ['enable-logging'])
-        service = Service(ChromeDriverManager().install())
-        super(ScrapingBot, self).__init__(options=options, service=service)
+        options = wd.ChromeOptions()
+        prefs = {'profile.managed_default_content_settings.images': 2, 'intl.accept_languages': 'en-GB'}
+        options.add_experimental_option('prefs', prefs)
+        super().__init__(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
         self.get(
             "https://voluntarias.plataformamaisbrasil.gov.br/voluntarias/Principal/Principal.do?Usr=guest&Pwd=guest")
         self.implicitly_wait(5)
