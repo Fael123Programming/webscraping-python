@@ -1,5 +1,5 @@
 from datetime import datetime
-from enums import *
+from icproject.bot.enums.enums import *
 
 
 class Post:
