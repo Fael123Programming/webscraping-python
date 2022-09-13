@@ -1,5 +1,7 @@
 from selenium import webdriver
 from datetime import datetime
+
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
@@ -28,9 +30,13 @@ class Bot(webdriver.Chrome):
         self.get(video_url)
         while True:
             left_controls_box = self.find_element(By.CLASS_NAME, 'ytp-left-controls')
-            btn_play = WebDriverWait(left_controls_box, 15).until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, 'button[title="Play (k)"]'))
-            )
-            btn_play.click()
-            sleep(10)
+            try:
+                btn_play = WebDriverWait(left_controls_box, 30).until(
+                    ec.presence_of_element_located((By.CSS_SELECTOR, 'button[title="Play (k)"]'))
+                )
+            except TimeoutException:
+                pass
+            else:
+                btn_play.click()
+                sleep(10)
             self.get(video_url)
